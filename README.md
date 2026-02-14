@@ -5,16 +5,19 @@
 <br>
 
 <p align="center">
-    <a href="https://github.com/jqhph/dcat-admin/actions">
-        <img src="https://github.com/jqhph/dcat-admin/workflows/Laravel%20Dusk/badge.svg" alt="Build Status">
+    <a href="https://github.com/jmluang/dcat-admin/actions">
+        <img src="https://github.com/jmluang/dcat-admin/workflows/Laravel%20Dusk/badge.svg" alt="Build Status">
     </a>
-    <a href="https://styleci.io/repos/182349597">
-        <img src="https://github.styleci.io/repos/182349597/shield" alt="StyleCI">
-    </a>
-    <a href="https://packagist.org/packages/dcat/laravel-admin" ><img src="https://poser.pugx.org/dcat/laravel-admin/v/stable" /></a> 
-    <a href="https://packagist.org/packages/dcat/laravel-admin"><img src="https://img.shields.io/packagist/dt/dcat/laravel-admin.svg?color=" /></a> 
-    <a><img src="https://img.shields.io/badge/php-7.1+-59a9f8.svg?style=flat" /></a> 
-    <a><img src="https://img.shields.io/badge/laravel-5.5+-59a9f8.svg?style=flat" ></a>
+    <a href="https://packagist.org/packages/jmluang/dcat-admin" ><img src="https://poser.pugx.org/jmluang/dcat-admin/v/stable" /></a> 
+    <a href="https://packagist.org/packages/jmluang/dcat-admin"><img src="https://img.shields.io/packagist/dt/jmluang/dcat-admin.svg?color=" /></a> 
+    <a><img src="https://img.shields.io/badge/php-8.3+-59a9f8.svg?style=flat" /></a> 
+    <a><img src="https://img.shields.io/badge/laravel-11+-59a9f8.svg?style=flat" ></a>
+</p>
+
+<p align="center">
+    <strong>⚠️ 这是基于 dcat-admin 的 PHP 8.3+ / Laravel 11/12 兼容分支</strong><br>
+    原项目：<a href="https://github.com/jqhph/dcat-admin">jqhph/dcat-admin</a> | 
+    原包名：<a href="https://packagist.org/packages/dcat/laravel-admin">dcat/laravel-admin</a>
 </p>
 
 <p align=""><code>Dcat Admin</code>是一个基于<a href="https://www.laravel-admin.org/" target="_blank">laravel-admin</a>二次开发而成的后台系统构建工具，只需很少的代码即可快速构建出一个功能完善的高颜值后台系统。内置丰富的后台常用组件，开箱即用，让开发者告别冗杂的HTML代码，对后端开发者非常友好。</p>
@@ -62,7 +65,7 @@
 
 ### 环境
  - PHP >= 8.3
- - Laravel 5.5.0 ~ 12.*
+ - Laravel ^11.0 | ^12.0
  - Fileinfo PHP Extension
 
 ### 可选依赖
