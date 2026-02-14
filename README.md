@@ -61,9 +61,12 @@
 
 
 ### 环境
- - PHP >= 7.1.0
- - Laravel 5.5.0 ~ 9.*
+ - PHP >= 8.3
+ - Laravel 5.5.0 ~ 12.*
  - Fileinfo PHP Extension
+
+### 可选依赖
+ - `dcat/easy-excel` - Excel 导出功能所需（运行 `composer require dcat/easy-excel:~2.0` 安装）
 
 ### 安装
 
@@ -91,7 +94,12 @@ DB_PASSWORD=
 ```
 cd {项目名称}
 
-composer require dcat/laravel-admin
+composer require jmluang/dcat-admin
+```
+
+**注意**：如需使用 Excel 导出功能，请额外安装：
+```bash
+composer require dcat/easy-excel:~2.0
 ```
 
 然后运行下面的命令来发布资源：

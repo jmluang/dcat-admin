@@ -39,6 +39,9 @@
         "fakerphp/faker": "^1.23",
         "mockery/mockery": "^1.6"
     },
+    "suggest": {
+        "dcat/easy-excel": "Required for Excel export functionality (~2.0)"
+    },
     "autoload": {
         "psr-4": {
             "Dcat\\Admin\\": "src/"
