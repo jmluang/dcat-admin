@@ -13,6 +13,24 @@ abstract class DuskTestCase extends BaseTestCase
     use CreatesApplication, BrowserExtension, InteractsWithDatabase;
 
     /**
+     * PHPUnit 11+ is phasing out doc-comment metadata (e.g. @beforeClass).
+     * Use the native lifecycle hook to ensure Chromedriver is started in CI.
+     */
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        static::startChromeDriver();
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        static::stopChromeDriver();
+
+        parent::tearDownAfterClass();
+    }
+
+    /**
      * @var Administrator
      */
     protected $user;
@@ -44,18 +62,6 @@ abstract class DuskTestCase extends BaseTestCase
     }
 
     /**
-     * Prepare for Dusk test execution.
-     *
-     * @beforeClass
-     *
-     * @return void
-     */
-    public static function prepare()
-    {
-        static::startChromeDriver();
-    }
-
-    /**
      * @param  \Facebook\WebDriver\Remote\RemoteWebDriver  $driver
      * @return \Laravel\Dusk\Browser
      */
@@ -82,6 +88,9 @@ abstract class DuskTestCase extends BaseTestCase
         $options = (new ChromeOptions)->addArguments([
             '--disable-gpu',
             '--headless',
+            // Required for many CI environments (including GitHub Actions).
+            '--no-sandbox',
+            '--disable-dev-shm-usage',
             '--window-size=1920,1080',
         ]);
 
