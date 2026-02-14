@@ -168,9 +168,11 @@ trait ModelTree
         foreach ($tree as $branch) {
             $node = static::find($branch['id']);
 
-            $node->{$node->getParentColumn()} = $parentId;
-            $node->{$node->getOrderColumn()} = static::$branchOrder[$branch['id']];
-            $node->getDepthColumn() && $node->{$node->getDepthColumn()} = $depth;
+            $node->setAttribute($node->getParentColumn(), $parentId);
+            $node->setAttribute($node->getOrderColumn(), static::$branchOrder[$branch['id']]);
+            if ($node->getDepthColumn()) {
+                $node->setAttribute($node->getDepthColumn(), $depth);
+            }
             $node->save();
 
             if (isset($branch['children'])) {
@@ -192,7 +194,7 @@ trait ModelTree
         $sameOrderModel = $this->getSameOrderModel('>');
 
         if ($sameOrderModel) {
-            $this->$orderColumnName = $this->$orderColumnName + 1;
+            $this->setAttribute($orderColumnName, $this->getAttribute($orderColumnName) + 1);
 
             $this->save();
 
@@ -202,8 +204,8 @@ trait ModelTree
         $swapWithModel = $this->buildSortQuery()
             ->limit(1)
             ->ordered()
-            ->where($orderColumnName, '>', $this->$orderColumnName)
-            ->where($parentColumnName, $this->$parentColumnName)
+            ->where($orderColumnName, '>', $this->getAttribute($orderColumnName))
+            ->where($parentColumnName, $this->getAttribute($parentColumnName))
             ->first();
 
         if (! $swapWithModel) {
@@ -221,8 +223,8 @@ trait ModelTree
         $swapWithModel = $this->buildSortQuery()
             ->limit(1)
             ->ordered('desc')
-            ->where($orderColumnName, '<', $this->$orderColumnName)
-            ->where($parentColumnName, $this->$parentColumnName)
+            ->where($orderColumnName, '<', $this->getAttribute($orderColumnName))
+            ->where($parentColumnName, $this->getAttribute($parentColumnName))
             ->first();
 
         if ($swapWithModel) {
@@ -234,7 +236,7 @@ trait ModelTree
         if (! $sameOrderModel) {
             return false;
         }
-        $sameOrderModel->$orderColumnName = $sameOrderModel->$orderColumnName + 1;
+        $sameOrderModel->setAttribute($orderColumnName, $sameOrderModel->getAttribute($orderColumnName) + 1);
         $sameOrderModel->save();
 
         return $this;
@@ -250,8 +252,8 @@ trait ModelTree
             ->orderBy($orderColumnName)
             ->orderBy($this->getKeyName())
             ->where($this->getKeyName(), $operator, $this->getKey())
-            ->where($orderColumnName, $this->$orderColumnName)
-            ->where($parentColumnName, $this->$parentColumnName)
+            ->where($orderColumnName, $this->getAttribute($orderColumnName))
+            ->where($parentColumnName, $this->getAttribute($parentColumnName))
             ->first();
     }
 
@@ -262,7 +264,7 @@ trait ModelTree
         $firstModel = $this->buildSortQuery()
             ->limit(1)
             ->ordered()
-            ->where($parentColumnName, $this->$parentColumnName)
+            ->where($parentColumnName, $this->getAttribute($parentColumnName))
             ->first();
 
         if ($firstModel->id === $this->id) {
@@ -271,7 +273,7 @@ trait ModelTree
 
         $orderColumnName = $this->determineOrderColumnName();
 
-        $this->$orderColumnName = $firstModel->$orderColumnName;
+        $this->setAttribute($orderColumnName, $firstModel->getAttribute($orderColumnName));
         $this->save();
 
         $this->buildSortQuery()->where($this->getKeyName(), '!=', $this->id)->increment($orderColumnName);
@@ -370,7 +372,7 @@ trait ModelTree
 
                 Tree::make(new static())->saveOrder($order);
 
-                $branch->{$branch->getKeyName()} = true;
+                $branch->setAttribute($branch->getKeyName(), true);
 
                 return false;
             }
