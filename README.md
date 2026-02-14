@@ -75,9 +75,9 @@
 
 首先需要安装`laravel`框架，如已安装可以跳过此步骤。如果您是第一次使用`laravel`，请务必先阅读文档 [安装 《Laravel中文文档》](https://learnku.com/docs/laravel/8.x/installation/9354) ！
 ```bash
-composer create-project --prefer-dist laravel/laravel 项目名称 9.*
+composer create-project --prefer-dist laravel/laravel 项目名称 "^11.0"
 # 或
-composer create-project --prefer-dist laravel/laravel 项目名称
+composer create-project --prefer-dist laravel/laravel 项目名称 "^12.0"
 ```
 
 安装完`laravel`之后需要修改`.env`文件，设置数据库连接设置正确
