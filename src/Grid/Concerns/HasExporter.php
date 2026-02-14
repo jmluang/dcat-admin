@@ -6,6 +6,8 @@ use Dcat\Admin\Grid;
 use Dcat\Admin\Grid\Exporter;
 use Dcat\Admin\Grid\Exporters\AbstractExporter;
 use Dcat\Admin\Grid\Tools;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 trait HasExporter
 {
@@ -59,12 +61,10 @@ trait HasExporter
     public function handleExportRequest($forceExport = false)
     {
         if (
-            $this->exported
-            || (
-                (! $this->allowExporter()
-                    || ! $scope = request($this->exporter()->getQueryName()))
-                && ! $forceExport
-            )
+            $this->exported ||
+            ((!$this->allowExporter() ||
+                !($scope = request($this->exporter()->getQueryName()))) &&
+                !$forceExport)
         ) {
             return;
         }
@@ -81,7 +81,16 @@ trait HasExporter
         }
 
         if ($forceExport || $this->allowExporter()) {
-            return $this->resolveExportDriver($scope)->export();
+            $result = $this->resolveExportDriver($scope)->export();
+
+            // Grid is often rendered inside a view tree; callers don't always return the result of
+            // handleExportRequest(). If the exporter returns an HTTP response, throw it to short-circuit
+            // rendering and let Laravel return the file download response.
+            if ($result instanceof Response) {
+                throw new HttpResponseException($result);
+            }
+
+            return $result;
         }
     }
 
@@ -111,13 +120,16 @@ trait HasExporter
      */
     public function exportUrl($scope = 1, $args = null)
     {
-        $input = array_merge(request()->all(), $this->exporter()->formatExportQuery($scope, $args));
+        $input = array_merge(
+            request()->all(),
+            $this->exporter()->formatExportQuery($scope, $args),
+        );
 
         if ($constraints = $this->model()->getConstraints()) {
             $input = array_merge($input, $constraints);
         }
 
-        return $this->resource().'?'.http_build_query($input);
+        return $this->resource() . "?" . http_build_query($input);
     }
 
     /**
@@ -127,11 +139,12 @@ trait HasExporter
      */
     public function renderExportButton()
     {
-        if (! $this->allowExporter()) {
-            return '';
+        if (!$this->allowExporter()) {
+            return "";
         }
 
-        return (new Tools\ExportButton($this))->render();
+        $tools = new Tools\ExportButton($this);
+        return $tools->render();
     }
 
     /**
