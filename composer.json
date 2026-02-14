@@ -1,6 +1,6 @@
 {
-    "name": "dcat/laravel-admin",
-    "description": "dcat admin",
+    "name": "jmluang/dcat-admin",
+    "description": "dcat admin - PHP 8.3+ and Laravel 11/12 compatible fork",
     "type": "library",
     "keywords": [
         "dcat",
@@ -8,11 +8,18 @@
         "admin",
         "grid",
         "form",
-        "laravel admin"
+        "laravel admin",
+        "php8.3",
+        "laravel11",
+        "laravel12"
     ],
-    "homepage": "https://github.com/jqhph/dcat-admin",
+    "homepage": "https://github.com/jmluang/dcat-admin",
     "license": "MIT",
     "authors": [
+        {
+            "name": "jmluang",
+            "email": "11557732+jmluang@users.noreply.github.com"
+        },
         {
             "name": "jqh",
             "email": "841324345@qq.com"
