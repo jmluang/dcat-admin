@@ -3,13 +3,14 @@
 namespace Tests\Feature;
 
 use Dcat\Admin\Admin;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 /**
  * 安装功能测试.
  *
- * @group install
  */
+#[Group('install')]
 class InstallTest extends TestCase
 {
     protected $login = false;

@@ -7,6 +7,7 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Laravel\Dusk\TestCase as BaseTestCase;
+use RuntimeException;
 
 abstract class DuskTestCase extends BaseTestCase
 {
@@ -87,18 +88,40 @@ abstract class DuskTestCase extends BaseTestCase
     {
         $options = (new ChromeOptions)->addArguments([
             '--disable-gpu',
-            '--headless',
+            // "new" headless mode is the default direction for modern Chrome.
+            '--headless=new',
             // Required for many CI environments (including GitHub Actions).
             '--no-sandbox',
             '--disable-dev-shm-usage',
+            // Fixes "only local connections are allowed" style issues on newer Chromedriver/Chrome combos.
+            '--remote-allow-origins=*',
             '--window-size=1920,1080',
         ]);
+
+        $this->waitForChromeDriver();
 
         return RemoteWebDriver::create(
             'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
                 ChromeOptions::CAPABILITY_W3C, $options
             )
         );
+    }
+
+    protected function waitForChromeDriver(int $timeoutSeconds = 10): void
+    {
+        $deadline = microtime(true) + $timeoutSeconds;
+
+        while (microtime(true) < $deadline) {
+            $fp = @fsockopen('127.0.0.1', 9515, $errno, $errstr, 0.2);
+            if (is_resource($fp)) {
+                fclose($fp);
+                return;
+            }
+
+            usleep(100_000);
+        }
+
+        throw new RuntimeException('Chromedriver is not listening on 127.0.0.1:9515');
     }
 
     /**
